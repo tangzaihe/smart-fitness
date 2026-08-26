@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: smart-fitness-api
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:192.168.1.100}:${DB_PORT:5432}/${DB_NAME:smartfitness}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:qQ515432aa..}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.1.100}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:qQ515432aa..}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-handlers-package: com.aseantec.smartfitness.infra.mybatis
+  global-config:
+    db-config:
+      id-type: assign_id
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:change-me-to-at-least-32-bytes-long!!}
+    admin-secret: ${ADMIN_JWT_SECRET:change-me-admin-secret-32-bytes-min}
+    access-ttl-seconds: 7200
+    refresh-ttl-seconds: 1209600
+  llm:
+    provider: ${LLM_PROVIDER:fake}
+    base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+    api-key: ${LLM_API_KEY:}
+    model: ${LLM_MODEL:gpt-4o-mini}
+    timeout-seconds: 60
+
+logging:
+  level:
+    com.aseantec.smartfitness: INFO

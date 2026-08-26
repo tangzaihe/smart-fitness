@@ -1,0 +1,45 @@
+name: smart-fitness
+
+networks:
+  sfnet:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sf-postgres
+    environment:
+      POSTGRES_DB: smartfitness
+      POSTGRES_USER: smartfitness
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-smartfitness}
+    ports:
+      - "5432:5432"
+    volumes:
+      - sf-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartfitness -d smartfitness"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - sfnet
+
+  redis:
+    image: redis:7-alpine
+    container_name: sf-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - sf-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - sfnet
+
+volumes:
+  sf-pg-data:
+  sf-redis-data:

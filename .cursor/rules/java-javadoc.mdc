@@ -1,0 +1,50 @@
+---
+description: Java 类与方法 Javadoc 模板。编辑 *.java 时套用，禁止空类名+裸字段。
+globs: "**/*.java"
+alwaysApply: false
+---
+
+# Javadoc 模板
+
+## Entity
+
+```java
+/**
+ * 待确认的教练处方。对应表 {@code advice}。
+ * <p>LLM 只允许写本表；用户确认后才允许创建 {@code session_log}。
+ */
+@Data
+@TableName("advice")
+public class Advice extends BaseEntity {
+    /** 所属 {@code coach_run.id}。 */
+    private Long runId;
+    /** {@code PENDING} | {@code ACCEPTED} | {@code REJECTED}。 */
+    private String status;
+}
+```
+
+## Service 方法
+
+```java
+/**
+ * 确认或拒绝处方。ACCEPT 且处方含课表时创建进行中课次。
+ *
+ * @param athleteId 当前运动员，必须拥有该 advice
+ * @return adviceId、status、sessionId（无课时空串）、idempotent
+ * @throws BizException {@code NOT_FOUND} 非本人；{@code ADVICE_NOT_DECIDABLE} 非 PENDING
+ *                      （已 ACCEPTED 再 ACCEPT 视为幂等，不抛）
+ */
+@Transactional
+public Map<String, Object> decide(Long athleteId, Long adviceId, DecideRequest request) { ... }
+```
+
+## Controller
+
+类注释写「资源 + 鉴权」。方法用 `@Operation(summary, description)` 写清业务，不写 `register` 这种零信息 summary。
+
+## 字段注释粒度
+
+| 要写 | 不要写 |
+|------|--------|
+| 枚举值、单位、可空含义、JSON 形状 | `运动员 ID` 如果字段已叫 `athleteId` |
+| 为何冗余（如 advice 同时挂 athleteId） | 与列名同义的翻译 |

@@ -1,0 +1,27 @@
+---
+description: Java 后端可读性硬门槛。写/改 smart-fitness-* 的 Java 时必须遵守；纯 Expo/文档任务可忽略。
+alwaysApply: true
+---
+
+# Java 可读性（强制）
+
+写或改 `smart-fitness-*/**/*.java` 时执行 [docs/15-backend-readability.md](docs/15-backend-readability.md)。禁止再生成「无类注释、无方法意图、无字段含义」的代码。
+
+## 必须有
+
+1. **每个 public 类型**（entity / service / controller / enum / port）：类 Javadoc = 职责 + 对应表或 API + 一条不变量。
+2. **每个 public 方法**（Lombok getter/setter 除外）：做什么、写哪些表、抛哪些 `ErrorCode`。不写「把 x 赋给 y」。
+3. **Entity 业务字段**：含义 + 合法值（如 `PENDING|ACCEPTED|REJECTED`）。`id` / `createdAt` / `updatedAt` 只在基类写一次。
+4. **魔法值**：状态字符串、护栏编号、配额周期提升为常量或 enum，或在字段注释写死合法集合。
+
+## 禁止
+
+- 复述代码的注释（`// 设置 status`、`// 返回 result`）
+- 无表名/无职责的空壳类（`public class Advice {}` 只有字段）
+- 超过 ~80 行仍无分段意图的 public 方法：先拆 private，再在 public 上写总意图
+- 给 Mapper 每个 `selectById` 写注释
+
+## 提交自检
+
+- 打开该类，不看实现，能否用 Javadoc 回答「这张表/这个接口干什么」
+- 打开 `decide` / `start` / `complete` 这类写库方法，能否看出副作用与幂等
