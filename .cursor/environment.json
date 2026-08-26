@@ -1,0 +1,20 @@
+{
+  "name": "smart-fitness",
+  "user": "ubuntu",
+  "install": "bash scripts/cloud-install.sh",
+  "start": "bash scripts/cloud-start.sh",
+  "terminals": [
+    {
+      "name": "backend",
+      "command": "cd /workspace && set -a && . ./.env && set +a && mvn -pl smart-fitness-api spring-boot:run"
+    },
+    {
+      "name": "mobile",
+      "command": "cd /workspace/smart-fitness-mobile && npx expo start --web --port 8081"
+    }
+  ],
+  "ports": [
+    { "name": "backend", "port": 8080 },
+    { "name": "mobile-web", "port": 8081 }
+  ]
+}
