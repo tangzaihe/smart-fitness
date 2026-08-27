@@ -22,6 +22,9 @@ public class Advice extends BaseEntity {
     /** 所属 {@code coach_run.id}。 */
     private Long runId;
 
+    /** 所属 {@code conversation.id}；对话驱动路径必填。 */
+    private Long conversationId;
+
     private Long athleteId;
 
     /** {@code SESSION} | {@code DELOAD} | {@code REST}。 */

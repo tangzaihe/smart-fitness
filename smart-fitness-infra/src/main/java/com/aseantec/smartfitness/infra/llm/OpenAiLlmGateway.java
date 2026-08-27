@@ -59,7 +59,7 @@ public class OpenAiLlmGateway implements LlmGateway {
         model.chat(
                 java.util.List.of(
                         SystemMessage.from(emptyToDefault(request.getSystemPrompt())),
-                        UserMessage.from(emptyToDefault(request.getUserPrompt()))
+                        UserMessage.from(buildUserMessage(request))
                 ),
                 new StreamingChatResponseHandler() {
                     @Override
@@ -116,6 +116,24 @@ public class OpenAiLlmGateway implements LlmGateway {
 
     private String emptyToDefault(String value) {
         return value == null ? "" : value;
+    }
+
+    /**
+     * 把结构化 context 拼进 user message，让 provider 真正看到候选动作/forceRest 等事实。
+     * <p>修复 P0 缺口：原实现只传 systemPrompt + userPrompt，丢弃了 context。
+     */
+    private String buildUserMessage(LlmRequest request) {
+        String user = emptyToDefault(request.getUserPrompt());
+        if (request.getContext() == null || request.getContext().isEmpty()) {
+            return user;
+        }
+        try {
+            String ctxJson = new com.fasterxml.jackson.databind.ObjectMapper()
+                    .writeValueAsString(request.getContext());
+            return user + "\n\n[context]\n" + ctxJson;
+        } catch (Exception ignored) {
+            return user;
+        }
     }
 
     private void persist(LlmRequest request, int prompt, int completion, String usageSource,

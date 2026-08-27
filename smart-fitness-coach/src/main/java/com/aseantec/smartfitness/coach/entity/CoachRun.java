@@ -26,8 +26,17 @@ public class CoachRun {
     /** {@code RUNNING} | {@code COMPLETED} | {@code FAILED}。 */
     private String status;
 
-    /** {@code MANUAL} | {@code APP_OPEN} 等。 */
+    /** {@code MANUAL} | {@code APP_OPEN} 等。对话驱动后弱化。 */
     private String trigger;
+
+    /** 所属 {@code conversation.id}；对话驱动路径必填，旧 P0 路径可空。 */
+    private Long conversationId;
+
+    /** 触发本 run 的 {@code conversation_message.id}（USER 消息）。 */
+    private Long messageId;
+
+    /** 执行本 run 的 Skill，如 {@code today_session}。 */
+    private String skill;
 
     private String model;
 
