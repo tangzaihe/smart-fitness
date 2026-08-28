@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.JdbcType;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 /**
@@ -24,6 +25,12 @@ public class Advice extends BaseEntity {
 
     /** 所属 {@code conversation.id}；对话驱动路径必填。 */
     private Long conversationId;
+
+    /** 关联 {@code training_plan.id}（scope=DAY）。 */
+    private Long trainingPlanId;
+
+    /** 处方对应日历日，用于同日互斥时 expire PENDING。 */
+    private LocalDate planDate;
 
     private Long athleteId;
 
